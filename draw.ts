@@ -7,6 +7,15 @@ export class DrawContext {
         this.ctx = ctx;
         this.fg = fg;
         this.bg = bg;
+
+    }
+
+    xToPixels(x: number): number {
+        return x * this.ctx.canvas.clientWidth;
+    }
+
+    yToPixels(y: number): number {
+        return this.ctx.canvas.clientHeight * (1.0 - y);
     }
 }
 
@@ -39,29 +48,28 @@ export class Line {
         dctx.ctx.strokeStyle = dctx.fg;
         dctx.ctx.lineWidth = 1;
 
-        dctx.ctx.moveTo(this.from.x, this.from.y);
-        dctx.ctx.lineTo(this.to.x, this.to.y);
+        dctx.ctx.moveTo(dctx.xToPixels(this.from.x), dctx.yToPixels(this.from.y));
+        dctx.ctx.lineTo(dctx.xToPixels(this.to.x), dctx.yToPixels(this.to.y));
 
         dctx.ctx.stroke();
     }
+
 }
 
 export class Rect {
     botLeft: Pt;
-    width: number;
-    height: number;
+    topRight: Pt;
 
-    constructor(bl: Pt, w: number, h: number) {
+    constructor(bl: Pt, tr: Pt) {
         this.botLeft = bl;
-        this.width = w;
-        this.height = h;
+        this.topRight = tr;
     }
 
     draw(dctx) {
         let bl = this.botLeft;
-        let tl = bl.add(new Pt(0, this.height));
-        let br = bl.add(new Pt(this.width, 0));
-        let tr = bl.add(new Pt(this.width, this.height));
+        let tr = this.topRight;
+        let tl = new Pt(bl.x, tr.y);
+        let br = new Pt(tr.x, bl.y);
         (new Line(bl, tl)).draw(dctx);
         (new Line(tl, tr)).draw(dctx);
         (new Line(tr, br)).draw(dctx);
@@ -69,3 +77,35 @@ export class Rect {
     }
 }
 
+export class Graph {
+    xlo: number;
+    xhi: number;
+    ylo: number;
+    yhi: number;
+    steps: number;
+
+    constructor(xlo: number, xhi: number, ylo: number, yhi: number, steps: number = 100) {
+        this.xlo = xlo;
+        this.xhi = xhi;
+        this.ylo = ylo;
+        this.yhi = yhi;
+        this.steps = steps;
+    }
+
+    /*
+    plot(dxtx, f) {
+        let dx = this.xhi - this.xlo;
+        let last: Pt;
+        let current: Pt;
+        for (let i = 0; i < this.steps; i++) {
+            let x = this.xlo + ((dx / this.steps) * i);
+            let y = f(x);
+            if (i > 0) {
+                current = Pt(x, y);
+                new Line(last, current).draw(dctx);
+            }
+            last = current;
+        }
+    }
+    */
+}

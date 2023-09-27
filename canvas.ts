@@ -7,15 +7,16 @@ function main() {
     canvas.height = 500;
     document.body.appendChild(canvas);
 
-
     let ctx = canvas.getContext('2d');
     let dctx = new draw.DrawContext(ctx, 'white', 'black');
+
+    new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1)).draw(dctx);
 
     let a440 = new sound.Sine(1.0, 440);
     console.log("First 3 samples are: " + a440.sample(0.0) + ", " + a440.sample(0.01) + ", " + a440.sample(0.02));
 
-    new draw.Line(new draw.Pt(10, 10), new draw.Pt(500, 40)).draw(dctx);
-    new draw.Rect(new draw.Pt(20, 20), 40, 30).draw(dctx);
+    new draw.Line(new draw.Pt(0.1, 0.1), new draw.Pt(0.7, 0.5)).draw(dctx);
+    new draw.Rect(new draw.Pt(0.2, 0.2), new draw.Pt(0.8, 0.6)).draw(dctx);
 }
 
 main();
