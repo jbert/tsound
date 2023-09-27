@@ -87,6 +87,12 @@ export class Line {
     to: Pt;
 
     constructor(from: Pt, to: Pt) {
+        if (from == null) {
+            throw new Error("from is null");
+        }
+        if (to == null) {
+            throw new Error("to is null");
+        }
         this.from = from;
         this.to = to;
     }
@@ -100,6 +106,10 @@ export class Line {
         let to = this.to.scaleUnitTo(rect);
         return new Line(from, to);
     }
+    string(): string {
+        return "{" + this.from.string() + "," + this.to.string() + "}"
+    }
+
 }
 
 export class Rect {
@@ -123,44 +133,11 @@ export class Rect {
     }
 
     string(): string {
-        return "[" + this.botLeft + "," + this.topRight + "]"
+        return "[" + this.botLeft.string() + "," + this.topRight.string() + "]"
     }
 
 
     withinUnitSquare(): boolean {
         return this.botLeft.withinUnit() && this.topRight.withinUnit();
     }
-}
-
-export class Graph {
-    xlo: number;
-    xhi: number;
-    ylo: number;
-    yhi: number;
-    steps: number;
-
-    constructor(xlo: number, xhi: number, ylo: number, yhi: number, steps: number = 100) {
-        this.xlo = xlo;
-        this.xhi = xhi;
-        this.ylo = ylo;
-        this.yhi = yhi;
-        this.steps = steps;
-    }
-
-    /*
-    plot(dxtx, f) {
-        let dx = this.xhi - this.xlo;
-        let last: Pt;
-        let current: Pt;
-        for (let i = 0; i < this.steps; i++) {
-            let x = this.xlo + ((dx / this.steps) * i);
-            let y = f(x);
-            if (i > 0) {
-                current = Pt(x, y);
-                new Line(last, current).draw(dctx);
-            }
-            last = current;
-        }
-    }
-    */
 }

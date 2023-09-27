@@ -1,5 +1,6 @@
 import * as sound from "./sound.js";
 import * as draw from "./draw.js";
+import * as graph from "./graph.js";
 
 function main() {
     let canvas = document.createElement('canvas');
@@ -24,9 +25,12 @@ function main() {
     new draw.Rect(new draw.Pt(0.2, 0.2), new draw.Pt(0.8, 0.6)).draw(ss);
 
     let ssRight = new draw.SubScreen(dctx, new draw.Rect(new draw.Pt(0.6, 0.1), new draw.Pt(0.9, 0.9)));
-    new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1)).draw(ssRight);
-    new draw.Line(new draw.Pt(0.2, 0.1), new draw.Pt(0.7, 0.5)).draw(ssRight);
-    new draw.Rect(new draw.Pt(0.2, 0.2), new draw.Pt(0.8, 0.6)).draw(ssRight);
+    let g = new graph.Graph(0, 10, -1, +1);
+
+    let f = function (x: number): number {
+        return x * x;
+    }
+    g.plot(ssRight, f);
 }
 
 main();
