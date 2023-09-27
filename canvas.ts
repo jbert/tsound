@@ -1,3 +1,5 @@
+import { Sound, Sine } from "./sound.js";
+
 function main() {
     let canvas = document.createElement('canvas');
     canvas.width = 500;
@@ -7,6 +9,9 @@ function main() {
 
     let ctx = canvas.getContext('2d');
     let dctx = new DrawContext(ctx, 'white', 'black');
+
+    let a440 = new Sine(1.0, 440);
+    console.log("First 3 samples are: " + a440.sample(0.0) + ", " + a440.sample(0.01) + ", " + a440.sample(0.02));
 
     new Line(new Pt(10, 10), new Pt(500, 40)).draw(dctx);
     new Rect(new Pt(20, 20), 40, 30).draw(dctx);
