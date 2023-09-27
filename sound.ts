@@ -7,7 +7,7 @@ export class Sine {
     dur: number;
     freq: number;
 
-    constructor(dur: number, freq: number) {
+    constructor(freq: number, dur: number = 1) {
         this.dur = dur;
         this.freq = freq;
     }

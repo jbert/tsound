@@ -7,9 +7,9 @@ DONE - add method to grab new drawcontext as sub-region of parent (but with its 
         - consider abstracting the coord transformation?
 
 DONE - have Graph take a drawcontext, which it draws over all of
-    - the xlo/xhi are then scaling from (x,y) space to (0,0)->(1,1) space
+    DONE - the xlo/xhi are then scaling from (x,y) space to (0,0)->(1,1) space
 
-- have top-level code create a SubScreen for the graph and draw 4 sine tones on 4 graphs
+DONE - have top-level code create a SubScreen for the graph and draw 4 sine tones on 4 graphs
 
 - add Harmonic overlay (with weights)
     - WeightedHarmonic

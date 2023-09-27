@@ -22,15 +22,16 @@ export class Graph {
         let dx = (this.xhi - this.xlo);
         let dy = (this.yhi - this.ylo);
         for (let drawX = 0; drawX <= 1; drawX += 1 / this.steps) {
-            // console.log("loop i: " + i + " last " + JSON.stringify(last));
             let x = this.xlo + (dx * drawX);
             let y = f(x);
             let drawY = (y - this.ylo) / dy;
 
+            //            console.log("loop x " + x + " y " + y);
+            //            console.log("loop drawX " + drawX + " drawY " + drawY);
+
             current = new draw.Pt(drawX, drawY);
             if (last != null) {
                 new draw.Line(last, current).draw(ds);
-                //                console.log("Drawing i " + i);
                 //                console.log("Drawing current " + current.string());
             }
             last = current;
