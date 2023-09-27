@@ -1,4 +1,8 @@
-export class DrawContext {
+export interface DrawScreen {
+    drawLine(line: Line);
+}
+
+export class Context {
     ctx: CanvasRenderingContext2D;
     fg: string;
     bg: string;
@@ -17,6 +21,35 @@ export class DrawContext {
     yToPixels(y: number): number {
         return this.ctx.canvas.clientHeight * (1.0 - y);
     }
+
+    drawLine(line: Line) {
+        this.ctx.beginPath();
+
+        this.ctx.strokeStyle = this.fg;
+        this.ctx.lineWidth = 1;
+
+        this.ctx.moveTo(this.xToPixels(line.from.x), this.yToPixels(line.from.y));
+        this.ctx.lineTo(this.xToPixels(line.to.x), this.yToPixels(line.to.y));
+
+        this.ctx.stroke();
+    }
+}
+
+export class SubScreen {
+    parent: DrawScreen
+    rect: Rect
+
+    constructor(parent: DrawScreen, rect: Rect) {
+        if (!rect.withinUnitSquare()) {
+            throw new Error("Rect not within unit square: " + rect.string())
+        }
+        this.parent = parent;
+        this.rect = rect;
+    }
+
+    drawLine(line: Line) {
+        this.parent.drawLine(line.scaleUnitTo(this.rect));
+    }
 }
 
 export class Pt {
@@ -26,6 +59,22 @@ export class Pt {
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
+    }
+
+    string(): string {
+        return "(" + this.x + "," + this.y + ")"
+    }
+
+    withinUnit(): boolean {
+        return 0 <= this.x && this.x <= 1 && 0 <= this.y && this.y <= 1;
+    }
+
+    scaleUnitTo(rect: Rect): Pt {
+        let dx = rect.topRight.x - rect.botLeft.x;
+        let x = rect.botLeft.x + (dx * this.x);
+        let dy = rect.topRight.y - rect.botLeft.y;
+        let y = rect.botLeft.y + (dy * this.y);
+        return new Pt(x, y);
     }
 
     add(b: Pt): Pt {
@@ -42,18 +91,15 @@ export class Line {
         this.to = to;
     }
 
-    draw(dctx) {
-        dctx.ctx.beginPath();
-
-        dctx.ctx.strokeStyle = dctx.fg;
-        dctx.ctx.lineWidth = 1;
-
-        dctx.ctx.moveTo(dctx.xToPixels(this.from.x), dctx.yToPixels(this.from.y));
-        dctx.ctx.lineTo(dctx.xToPixels(this.to.x), dctx.yToPixels(this.to.y));
-
-        dctx.ctx.stroke();
+    draw(ds: DrawScreen) {
+        ds.drawLine(this);
     }
 
+    scaleUnitTo(rect: Rect): Line {
+        let from = this.from.scaleUnitTo(rect);
+        let to = this.to.scaleUnitTo(rect);
+        return new Line(from, to);
+    }
 }
 
 export class Rect {
@@ -65,15 +111,24 @@ export class Rect {
         this.topRight = tr;
     }
 
-    draw(dctx) {
+    draw(ds: DrawScreen) {
         let bl = this.botLeft;
         let tr = this.topRight;
         let tl = new Pt(bl.x, tr.y);
         let br = new Pt(tr.x, bl.y);
-        (new Line(bl, tl)).draw(dctx);
-        (new Line(tl, tr)).draw(dctx);
-        (new Line(tr, br)).draw(dctx);
-        (new Line(br, bl)).draw(dctx);
+        (new Line(bl, tl)).draw(ds);
+        (new Line(tl, tr)).draw(ds);
+        (new Line(tr, br)).draw(ds);
+        (new Line(br, bl)).draw(ds);
+    }
+
+    string(): string {
+        return "[" + this.botLeft + "," + this.topRight + "]"
+    }
+
+
+    withinUnitSquare(): boolean {
+        return this.botLeft.withinUnit() && this.topRight.withinUnit();
     }
 }
 
