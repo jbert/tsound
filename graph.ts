@@ -16,15 +16,18 @@ export class Graph {
     }
 
     plot(ds: draw.DrawScreen, f) {
-        let dx = this.xhi - this.xlo;
         let last: draw.Pt;
         let current: draw.Pt;
         //        console.log("steps " + this.steps);
-        for (let i = 0; i < this.steps; i++) {
+        let dx = (this.xhi - this.xlo);
+        let dy = (this.yhi - this.ylo);
+        for (let drawX = 0; drawX <= 1; drawX += 1 / this.steps) {
             // console.log("loop i: " + i + " last " + JSON.stringify(last));
-            let x = this.xlo + ((dx / this.steps) * i);
+            let x = this.xlo + (dx * drawX);
             let y = f(x);
-            current = new draw.Pt(x, y);
+            let drawY = (y - this.ylo) / dy;
+
+            current = new draw.Pt(drawX, drawY);
             if (last != null) {
                 new draw.Line(last, current).draw(ds);
                 //                console.log("Drawing i " + i);

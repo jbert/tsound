@@ -48,7 +48,9 @@ export class SubScreen {
     }
 
     drawLine(line: Line) {
-        this.parent.drawLine(line.scaleUnitTo(this.rect));
+        if (line.withinUnitSquare()) {
+            this.parent.drawLine(line.scaleUnitTo(this.rect));
+        }
     }
 }
 
@@ -106,6 +108,11 @@ export class Line {
         let to = this.to.scaleUnitTo(rect);
         return new Line(from, to);
     }
+
+    withinUnitSquare(): boolean {
+        return this.from.withinUnit() && this.to.withinUnit();
+    }
+
     string(): string {
         return "{" + this.from.string() + "," + this.to.string() + "}"
     }
