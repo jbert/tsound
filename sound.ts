@@ -3,6 +3,22 @@ export interface Sound {
     sample(t: number): number;
 }
 
+export class Scale {
+    sound: Sound;
+    factor: number;
+
+    constructor(sound: Sound, factor: number) {
+        this.sound = sound;
+        this.factor = factor;
+    }
+    duration(): number {
+        return this.sound.duration();
+    }
+    sample(t: number): number {
+        return this.factor * this.sound.sample(t);
+    }
+}
+
 export class Sine {
     dur: number;
     freq: number;
@@ -22,6 +38,23 @@ export class Sine {
     }
 }
 
+export class Join {
+    sounds: Sound[]
+    dur: number
+
+    constructor(sounds: Sound[]) {
+        this.sounds = sounds;
+        this.dur = Math.min(...sounds.map((snd) => snd.duration()));
+    }
+    duration(): number {
+        return this.dur
+    }
+    sample(t: number): number {
+        return this.sounds.reduce((acc, curr) => {
+            return acc + curr.sample(t);
+        }, 0);
+    }
+}
 
 export function to32BitLE(n: number): string {
     let s = "";

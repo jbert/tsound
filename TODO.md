@@ -18,14 +18,18 @@ DONE - register click in canvas and forward to subscreen
     DONE - add id to subscreen
     DONE - console log the subscreen id
 
-- play sound from JS
+DONE - play sound from JS
     - need to play wav....render it serverside?
     - could have PUT /foo.wav <wavdata> and then use the URL?
     - data:// url?
 
-- create sound sink abstraction
+NO - create sound sink abstraction
 
-- play sines to sound sink
+NO - play sines to sound sink
+
+DONE - add scale
+
+DONE - add join
 
 - add Harmonic overlay (with weights)
     - WeightedHarmonic

@@ -42,19 +42,37 @@ function main() {
 
     const sampleRate = 8000;
 
+
+    const boundBox = new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1));
+    const g = new graph.Graph(0, 0.01, -1, +1);
+
     layout.forEach((row) => {
         const snd = new sound.Sine(row.freq);
         const rect = new draw.Rect(new draw.Pt(row.l, row.b), new draw.Pt(row.r, row.t));
         const ss = new draw.SubScreen(dctx, row.id, rect);
 
-        const box = new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1));
-        box.draw(ss);
+        boundBox.draw(ss);
 
         ss.onMouse(() => { playSound(audio, snd) });
 
-        const g = new graph.Graph(0, 0.1, -1, +1);
         g.plot(ss, (x) => snd.sample(x));
     });
+
+    let soundSpec: { sound: sound.Sound, loudness: number }[] = [
+        { sound: new sound.Sine(220), loudness: 0.5 },
+        { sound: new sound.Sine(440), loudness: 0.2 },
+        { sound: new sound.Sine(880), loudness: 0.1 },
+    ]
+    let blendedSounds: sound.Sound[] = soundSpec.map((row) => {
+        return new sound.Scale(row.sound, row.loudness);
+    })
+    const snd = new sound.Join(blendedSounds);
+    const rect = new draw.Rect(new draw.Pt(0.4, 0.4), new draw.Pt(0.6, 0.6));
+    const ss = new draw.SubScreen(dctx, "Blend", rect);
+
+    boundBox.draw(ss);
+    ss.onMouse(() => { playSound(audio, snd) });
+    g.plot(ss, (x) => snd.sample(x));
 }
 
 
