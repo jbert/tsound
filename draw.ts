@@ -64,9 +64,10 @@ export class Context {
 
 export class SubScreen {
     id: string;
-    parent: DrawScreen
-    rect: Rect
-    children: DrawScreen[]
+    parent: DrawScreen;
+    rect: Rect;
+    children: DrawScreen[];
+    mouseCallback?: () => void;
 
     constructor(parent: DrawScreen, id: string, rect: Rect) {
         if (!rect.withinUnitSquare()) {
@@ -96,6 +97,13 @@ export class SubScreen {
                 child.mouseClick(mousePt);
             }
         });
+        if (this.mouseCallback != null) {
+            this.mouseCallback();
+        }
+    }
+
+    onMouse(f: () => void) {
+        this.mouseCallback = f;
     }
 
     registerChild(child: DrawScreen) {
