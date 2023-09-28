@@ -13,8 +13,8 @@ DONE - have top-level code create a SubScreen for the graph and draw 4 sine tone
 
 - register click in canvas and forward to subscreen
     DONE - register click in drawscreen coords
-    - have parent track child screens
-    - forward click to any overlapping subscreens (recursively)
+    DONE - have parent track child screens
+    DONE - forward click to any overlapping subscreens (recursively)
     - add id to subscreen
     - console log the subscreen id
 

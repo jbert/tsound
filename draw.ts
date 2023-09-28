@@ -1,5 +1,8 @@
 export interface DrawScreen {
+    rect: Rect;
+
     drawLine(line: Line);
+    mouseClick(p: Pt);
 }
 
 export class Context {
@@ -8,6 +11,8 @@ export class Context {
     bg: string;
     width: number;
     height: number;
+    children: DrawScreen[];
+    rect: Rect;
 
     constructor(ctx: CanvasRenderingContext2D, fg: string, bg: string) {
         this.ctx = ctx;
@@ -16,12 +21,27 @@ export class Context {
 
         this.width = this.ctx.canvas.clientWidth;
         this.height = this.ctx.canvas.clientHeight;
+        this.children = [];]
+        this.rect = RectUnit;
     }
 
-    mouseClick(screenX: number, screenY: number) {
-        const x = screenX / this.width;
-        const y = 1 - screenY / this.height;
-        console.log("x " + x + " y " + y);
+    registerChild(child: DrawScreen) {
+        this.children.push(child);
+    }
+
+    mouseClick(screenP: Pt) {
+        const x = screenP.x / this.width;
+        const y = 1 - screenP.y / this.height;
+        const mousePt = new Pt(x, y);
+        //        console.log("x " + x + " y " + y);
+        //        console.log("Have children: " + this.children.length);
+        this.children.forEach((child) => {
+            //            console.log("child.rect: " + child.rect.string());
+            //            console.log("mousePt: " + mousePt.string());
+            if (child.rect.contains(mousePt)) {
+                child.mouseClick(mousePt);
+            }
+        });
     }
 
     xToPixels(x: number): number {
@@ -48,6 +68,7 @@ export class Context {
 export class SubScreen {
     parent: DrawScreen
     rect: Rect
+    children: DrawScreen[]
 
     constructor(parent: DrawScreen, rect: Rect) {
         if (!rect.withinUnitSquare()) {
@@ -55,6 +76,8 @@ export class SubScreen {
         }
         this.parent = parent;
         this.rect = rect;
+        this.children = [];
+        parent.registerChild(this);
     }
 
     drawLine(line: Line) {
@@ -62,6 +85,28 @@ export class SubScreen {
             this.parent.drawLine(line.scaleUnitTo(this.rect));
         }
     }
+
+    mouseClick(parentPt: Pt) {
+        console.log("SS click:" + parentPt.string());
+        const x = (parentPt.x - this.rect.left()) / (this.rect.right() - this.rect.left());
+        const y = (parentPt.y - this.rect.bottom()) / (this.rect.top() - this.rect.bottom());
+
+        const mousePt = new Pt(x, y);
+        //        console.log("x " + x + " y " + y);
+        //        console.log("Have children: " + this.children.length);
+        this.children.forEach((child) => {
+            //            console.log("child.rect: " + child.rect.string());
+            //            console.log("mousePt: " + mousePt.string());
+            if (child.rect.contains(mousePt)) {
+                child.mouseClick(mousePt);
+            }
+        });
+    }
+
+    registerChild(child: DrawScreen) {
+        this.children.push(child);
+    }
+
 }
 
 export class Pt {
@@ -141,13 +186,34 @@ export class Rect {
     draw(ds: DrawScreen) {
         let bl = this.botLeft;
         let tr = this.topRight;
-        let tl = new Pt(bl.x, tr.y);
-        let br = new Pt(tr.x, bl.y);
+        let tl = this.topLeft();
+        let br = this.botRight();
         (new Line(bl, tl)).draw(ds);
         (new Line(tl, tr)).draw(ds);
         (new Line(tr, br)).draw(ds);
         (new Line(br, bl)).draw(ds);
     }
+
+    left(): number {
+        return this.botLeft.x;
+    }
+    right(): number {
+        return this.topRight.x;
+    }
+    top(): number {
+        return this.topRight.y;
+    }
+    bottom(): number {
+        return this.botLeft.y;
+    }
+
+    topLeft(): Pt {
+        return new Pt(this.left(), this.top());
+    }
+    botRight(): Pt {
+        return new Pt(this.right(), this.bottom());
+    }
+
 
     string(): string {
         return "[" + this.botLeft.string() + "," + this.topRight.string() + "]"
@@ -157,4 +223,12 @@ export class Rect {
     withinUnitSquare(): boolean {
         return this.botLeft.withinUnit() && this.topRight.withinUnit();
     }
+
+    contains(p: Pt): boolean {
+        return this.left() <= p.x && p.x <= this.right() && this.bottom() <= p.y && p.y <= this.top();
+    }
 }
+
+const PtOrigin: Pt = new Pt(0, 0);
+const PtUnitXY: Pt = new Pt(1, 1);
+const RectUnit: Rect = new Rect(PtOrigin, PtUnitXY);

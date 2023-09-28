@@ -20,7 +20,7 @@ function main() {
 
         //        console.log("X: " + x);
         //        console.log("Y: " + y);
-        dctx.mouseClick(x, y);
+        dctx.mouseClick(new draw.Pt(x, y));
     }
 
     new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1)).draw(dctx);
