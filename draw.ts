@@ -3,6 +3,7 @@ export interface DrawScreen {
 
     drawLine(line: Line);
     mouseClick(p: Pt);
+    registerChild(child: DrawScreen);
 }
 
 export class Context {
@@ -21,7 +22,7 @@ export class Context {
 
         this.width = this.ctx.canvas.clientWidth;
         this.height = this.ctx.canvas.clientHeight;
-        this.children = [];]
+        this.children = [];
         this.rect = RectUnit;
     }
 
