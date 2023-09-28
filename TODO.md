@@ -32,7 +32,7 @@ DONE - add scale
 DONE - add join
 
 - add Harmonic overlay (with weights)
-    - WeightedHarmonic
+    DONE - WeightedHarmonic
     - EnvelopeHarmonic (takes a func?)
 
 - EnvelopeAmplitude

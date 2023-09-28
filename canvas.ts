@@ -58,15 +58,20 @@ function main() {
         g.plot(ss, (x) => snd.sample(x));
     });
 
+    /*
     let soundSpec: { sound: sound.Sound, loudness: number }[] = [
         { sound: new sound.Sine(220), loudness: 0.5 },
         { sound: new sound.Sine(440), loudness: 0.2 },
+        { sound: new sound.Sine(660), loudness: 0.2 },
         { sound: new sound.Sine(880), loudness: 0.1 },
     ]
     let blendedSounds: sound.Sound[] = soundSpec.map((row) => {
         return new sound.Scale(row.sound, row.loudness);
     })
-    const snd = new sound.Join(blendedSounds);
+
+     const snd = new sound.Join(blendedSounds);
+*/
+    const snd = sound.Harmonics(220, [0.2, 0.2, 0.2, 0.1, 0.1, 0.05]);
     const rect = new draw.Rect(new draw.Pt(0.4, 0.4), new draw.Pt(0.6, 0.6));
     const ss = new draw.SubScreen(dctx, "Blend", rect);
 

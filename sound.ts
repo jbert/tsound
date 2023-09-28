@@ -3,6 +3,29 @@ export interface Sound {
     sample(t: number): number;
 }
 
+function sum(ns: number[]): number {
+    return ns.reduce((acc, curr) => {
+        return acc + curr;
+    }, 0);
+}
+
+export function Harmonics(baseFreq: number, argWeights: number[], duration: number = 1.0): Sound {
+    const total = sum(argWeights);
+    let sounds: Sound[] = [];
+
+    // Normalise so total weight = 1
+    let weights = argWeights.map((w) => w / total);
+    let mult = 1;
+    weights.forEach((w) => {
+        const sine = new Sine(baseFreq * mult, duration);
+        const scaledSine = new Scale(sine, w);
+        sounds.push(scaledSine);
+        mult++;
+    });
+    return new Join(sounds);
+}
+
+
 export class Scale {
     sound: Sound;
     factor: number;
@@ -50,9 +73,7 @@ export class Join {
         return this.dur
     }
     sample(t: number): number {
-        return this.sounds.reduce((acc, curr) => {
-            return acc + curr.sample(t);
-        }, 0);
+        return sum(this.sounds.map((s) => s.sample(t)));
     }
 }
 
