@@ -11,6 +11,22 @@ DONE - have Graph take a drawcontext, which it draws over all of
 
 DONE - have top-level code create a SubScreen for the graph and draw 4 sine tones on 4 graphs
 
+- register click in canvas and forward to subscreen
+    DONE - register click in drawscreen coords
+    - have parent track child screens
+    - forward click to any overlapping subscreens (recursively)
+    - add id to subscreen
+    - console log the subscreen id
+
+- play sound from JS
+    - need to play wav....render it serverside?
+    - could have PUT /foo.wav <wavdata> and then use the URL?
+    - data:// url?
+
+- create sound sink abstraction
+
+- play sines to sound sink
+
 - add Harmonic overlay (with weights)
     - WeightedHarmonic
     - EnvelopeHarmonic (takes a func?)

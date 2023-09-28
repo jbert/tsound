@@ -3,13 +3,25 @@ import * as draw from "./draw.js";
 import * as graph from "./graph.js";
 
 function main() {
-    let canvas = document.createElement('canvas');
-    canvas.width = 500;
-    canvas.height = 500;
-    document.body.appendChild(canvas);
+    const canvas = document.getElementById('the-canvas');
+    if (!(canvas instanceof HTMLCanvasElement)) {
+        throw new Error("Element is not a canvas: " + (typeof canvas));
+    }
+    canvas.width = 600;
+    canvas.height = 600;
 
     let ctx = canvas.getContext('2d');
     let dctx = new draw.Context(ctx, 'white', 'black');
+
+    canvas.onclick = (ev: MouseEvent) => {
+        const br = canvas.getBoundingClientRect();
+        const x = ev.clientX - br.left;
+        const y = ev.clientY - br.top;
+
+        //        console.log("X: " + x);
+        //        console.log("Y: " + y);
+        dctx.mouseClick(x, y);
+    }
 
     new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1)).draw(dctx);
 

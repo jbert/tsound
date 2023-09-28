@@ -6,20 +6,30 @@ export class Context {
     ctx: CanvasRenderingContext2D;
     fg: string;
     bg: string;
+    width: number;
+    height: number;
 
     constructor(ctx: CanvasRenderingContext2D, fg: string, bg: string) {
         this.ctx = ctx;
         this.fg = fg;
         this.bg = bg;
 
+        this.width = this.ctx.canvas.clientWidth;
+        this.height = this.ctx.canvas.clientHeight;
+    }
+
+    mouseClick(screenX: number, screenY: number) {
+        const x = screenX / this.width;
+        const y = 1 - screenY / this.height;
+        console.log("x " + x + " y " + y);
     }
 
     xToPixels(x: number): number {
-        return x * this.ctx.canvas.clientWidth;
+        return x * this.width;
     }
 
     yToPixels(y: number): number {
-        return this.ctx.canvas.clientHeight * (1.0 - y);
+        return this.height * (1.0 - y);
     }
 
     drawLine(line: Line) {
