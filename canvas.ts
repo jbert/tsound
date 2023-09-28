@@ -62,7 +62,7 @@ function playSound(audio: HTMLAudioElement, snd: sound.Sound) {
     let conv = new sound.converter(snd, 8000);
     const wav = conv.toWAV();
     const dataURL = 'data:audio/wav;base64,' + window.btoa(wav.asString());
-    console.log(dataURL);
+    //    console.log(dataURL);
     audio.src = dataURL;
     audio.play();
 }

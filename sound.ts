@@ -39,6 +39,8 @@ export function to16BitLE(n: number): string {
     return s;
 }
 
+
+
 export class wav {
     numChannels: number;
     format: number;
@@ -122,7 +124,7 @@ export class converter {
         let t = 0;
         let dt = 1 / numSamples;
         for (let i = 0; i < numSamples; i++) {
-            samples[i] = this.snd.sample(t) * 32768;
+            samples[i] = this.snd.sample(t) * 32767;
             t += dt;
         }
         return samples;
