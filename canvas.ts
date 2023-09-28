@@ -34,10 +34,10 @@ function main() {
     //    new draw.Line(new draw.Pt(0.2, 0.1), new draw.Pt(0.7, 0.5)).draw(dctx);
     //    new draw.Rect(new draw.Pt(0.2, 0.2), new draw.Pt(0.8, 0.6)).draw(dctx);
 
-    let ssA = new draw.SubScreen(dctx, new draw.Rect(new draw.Pt(0.1, 0.1), new draw.Pt(0.4, 0.4)));
-    let ssB = new draw.SubScreen(dctx, new draw.Rect(new draw.Pt(0.6, 0.1), new draw.Pt(0.9, 0.4)));
-    let ssC = new draw.SubScreen(dctx, new draw.Rect(new draw.Pt(0.1, 0.6), new draw.Pt(0.4, 0.9)));
-    let ssD = new draw.SubScreen(dctx, new draw.Rect(new draw.Pt(0.6, 0.6), new draw.Pt(0.9, 0.9)));
+    let ssA = new draw.SubScreen(dctx, "A", new draw.Rect(new draw.Pt(0.1, 0.1), new draw.Pt(0.4, 0.4)));
+    let ssB = new draw.SubScreen(dctx, "B", new draw.Rect(new draw.Pt(0.6, 0.1), new draw.Pt(0.9, 0.4)));
+    let ssC = new draw.SubScreen(dctx, "C", new draw.Rect(new draw.Pt(0.1, 0.6), new draw.Pt(0.4, 0.9)));
+    let ssD = new draw.SubScreen(dctx, "D", new draw.Rect(new draw.Pt(0.6, 0.6), new draw.Pt(0.9, 0.9)));
 
     let rect = new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1));
     rect.draw(ssA);

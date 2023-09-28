@@ -11,12 +11,12 @@ DONE - have Graph take a drawcontext, which it draws over all of
 
 DONE - have top-level code create a SubScreen for the graph and draw 4 sine tones on 4 graphs
 
-- register click in canvas and forward to subscreen
+DONE - register click in canvas and forward to subscreen
     DONE - register click in drawscreen coords
     DONE - have parent track child screens
     DONE - forward click to any overlapping subscreens (recursively)
-    - add id to subscreen
-    - console log the subscreen id
+    DONE - add id to subscreen
+    DONE - console log the subscreen id
 
 - play sound from JS
     - need to play wav....render it serverside?

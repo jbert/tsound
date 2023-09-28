@@ -33,11 +33,7 @@ export class Context {
         const x = screenP.x / this.width;
         const y = 1 - screenP.y / this.height;
         const mousePt = new Pt(x, y);
-        //        console.log("x " + x + " y " + y);
-        //        console.log("Have children: " + this.children.length);
         this.children.forEach((child) => {
-            //            console.log("child.rect: " + child.rect.string());
-            //            console.log("mousePt: " + mousePt.string());
             if (child.rect.contains(mousePt)) {
                 child.mouseClick(mousePt);
             }
@@ -66,14 +62,16 @@ export class Context {
 }
 
 export class SubScreen {
+    id: string;
     parent: DrawScreen
     rect: Rect
     children: DrawScreen[]
 
-    constructor(parent: DrawScreen, rect: Rect) {
+    constructor(parent: DrawScreen, id: string, rect: Rect) {
         if (!rect.withinUnitSquare()) {
             throw new Error("Rect not within unit square: " + rect.string())
         }
+        this.id = id;
         this.parent = parent;
         this.rect = rect;
         this.children = [];
@@ -87,16 +85,12 @@ export class SubScreen {
     }
 
     mouseClick(parentPt: Pt) {
-        console.log("SS click:" + parentPt.string());
+        console.log(this.id + ": SS click:" + parentPt.string());
         const x = (parentPt.x - this.rect.left()) / (this.rect.right() - this.rect.left());
         const y = (parentPt.y - this.rect.bottom()) / (this.rect.top() - this.rect.bottom());
 
         const mousePt = new Pt(x, y);
-        //        console.log("x " + x + " y " + y);
-        //        console.log("Have children: " + this.children.length);
         this.children.forEach((child) => {
-            //            console.log("child.rect: " + child.rect.string());
-            //            console.log("mousePt: " + mousePt.string());
             if (child.rect.contains(mousePt)) {
                 child.mouseClick(mousePt);
             }
