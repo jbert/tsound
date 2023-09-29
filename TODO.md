@@ -31,9 +31,28 @@ DONE - add scale
 
 DONE - add join
 
+- add Envelope (takes a func)
+
+- add PiecewiseEnvelope (create envelope func)
+
+- add SplineEnvelope?
+
+DONE - ExpEnvelope
+    ln(0.1) = -2.30258509299
+    0.1 = exp(k * x). x = duration (i.e. d), the kd = ln(0.1), k = ln(0.1)/d
+
+- add an attack
+
 - add Harmonic overlay (with weights)
     DONE - WeightedHarmonic
-    - EnvelopeHarmonic (takes a func?)
+    - EnvelopeHarmonic (takes a func per harmonic)
+
+- Look up some timbres for common instruments
+    - try and replicate some from first principles
+
+- add Gates
+    - takes one sound as the control plane
+    - envelopes the other sound using the gate
 
 - EnvelopeAmplitude
     - arb function

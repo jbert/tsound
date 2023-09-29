@@ -77,6 +77,34 @@ export class Join {
     }
 }
 
+export class Envelope {
+    sound: Sound;
+    env: (number) => number;
+
+    constructor(sound: Sound, env: (number) => number) {
+        this.sound = sound;
+        this.env = env;
+    }
+    duration(): number {
+        return this.sound.duration()
+    }
+    sample(t: number): number {
+        return this.env(t) * this.sound.sample(t);
+    }
+}
+
+export function EnvelopeExp(sound: Sound): Envelope {
+    let expEnv = function (t: number) {
+        let decreaseTo = 0.1
+        const k = Math.log(decreaseTo) / sound.duration()
+        console.log("k is: " + k);
+        console.log("Math.log(0.1) is: " + Math.log(decreaseTo));
+        // Decay from 1 to 0.1 over tenthAt seconds
+        return Math.exp(t * k);
+    }
+    return new Envelope(sound, expEnv);
+}
+
 export function to32BitLE(n: number): string {
     let s = "";
     s += String.fromCharCode((n >> 0) & 0xff);
