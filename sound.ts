@@ -81,7 +81,7 @@ export class Envelope {
     sound: Sound;
     env: (number) => number;
 
-    constructor(sound: Sound, env: (number) => number) {
+    constructor(sound: Sound, env: (e) => number) {
         this.sound = sound;
         this.env = env;
     }
@@ -93,12 +93,27 @@ export class Envelope {
     }
 }
 
+export function EvenLinearEnvelope(sound: Sound, pts: number[]): Envelope {
+    // pts[0] is starting env, pts[-1] is end env, so we have (length-1) regions
+    const tStep = sound.duration() / (pts.length - 1);
+    let linearEnv = function (t: number) {
+        const index = Math.floor(t / tStep);
+        // Linear between pts[index] and pts[index+1]
+        const dt = (t / tStep) - index;
+        const a = pts[index];
+        const b = pts[index + 1]
+        // console.log("t " + t + " tstep " + tStep + " dt " + dt);
+        return a + dt * (b - a);
+    }
+    return new Envelope(sound, linearEnv);
+}
+
 export function EnvelopeExp(sound: Sound): Envelope {
     let expEnv = function (t: number) {
         let decreaseTo = 0.1
         const k = Math.log(decreaseTo) / sound.duration()
-        console.log("k is: " + k);
-        console.log("Math.log(0.1) is: " + Math.log(decreaseTo));
+        // console.log("k is: " + k);
+        // console.log("Math.log(0.1) is: " + Math.log(decreaseTo));
         // Decay from 1 to 0.1 over tenthAt seconds
         return Math.exp(t * k);
     }

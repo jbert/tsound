@@ -47,7 +47,7 @@ function main() {
     const g = new graph.Graph(0, 1.0, -1, +1);
 
     layout.forEach((row) => {
-        const snd = sound.EnvelopeExp(new sound.Sine(row.freq));
+        const snd = sound.EvenLinearEnvelope(new sound.Sine(row.freq), [0.1, 1.0, 0.9, 0.9, 0.2, 0.15, 0.1, 0.05, 0]);
         const rect = new draw.Rect(new draw.Pt(row.l, row.b), new draw.Pt(row.r, row.t));
         const ss = new draw.SubScreen(dctx, row.id, rect);
 
