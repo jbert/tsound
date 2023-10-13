@@ -1,3 +1,39 @@
+NEXT
+----
+
+- try to replicate guitar timbe
+    - Load harmonic spectra from CSV
+    - playback
+    - convert to relative harmonic power
+    - try to play different notes
+
+- examine harmonic spectral decay
+    - ??? try using sox over small increments of time?
+    - can sox output CSV spectrum?
+    - drive an FFT from code to analyse and save as "Relative Harmonic Power"
+
+SOON
+----
+
+- add SplineEnvelope?
+
+- allow different envelopes for different harmonics
+    - how to compose?
+
+- add Harmonic overlay (with weights)
+    DONE - WeightedHarmonic
+    DONE - EnvelopeHarmonic (takes a func per harmonic)
+
+- Look up some timbres for common instruments
+    - try and replicate some from first principles
+
+- add Gates
+    - takes one sound as the control plane
+    - envelopes the other sound using the gate
+
+DONE
+----
+
 DONE - move line + rect drawing over to 0,0 -> 1, 1 coords
     - bottom left origin
 
@@ -35,29 +71,14 @@ DONE - add Envelope (takes a func)
 
 DONE - add PiecewiseEnvelope (create envelope func)
 
-- add SplineEnvelope?
-
 DONE - ExpEnvelope
     ln(0.1) = -2.30258509299
     0.1 = exp(k * x). x = duration (i.e. d), the kd = ln(0.1), k = ln(0.1)/d
 
 DONE - add an attack
 
-- add Harmonic overlay (with weights)
-    DONE - WeightedHarmonic
-    DONE - EnvelopeHarmonic (takes a func per harmonic)
-
-- Look up some timbres for common instruments
-    - try and replicate some from first principles
-
-- add Gates
-    - takes one sound as the control plane
-    - envelopes the other sound using the gate
-
 DONE - EnvelopeAmplitude
     - arb function
     - piecewise linear
     - expo decay
 
-- allow different envelopes for different harmonics
-    - how to compose?
