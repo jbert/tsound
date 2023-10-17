@@ -1,6 +1,7 @@
 import * as sound from "./sound.js";
 import * as draw from "./draw.js";
 import * as graph from "./graph.js";
+import * as voice from "./voice.js";
 
 function main() {
     const canvas = document.getElementById('the-canvas');
@@ -42,12 +43,12 @@ function main() {
 
     const sampleRate = 8000;
 
-
     const boundBox = new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1));
     const g = new graph.Graph(0, 1.0, -1, +1);
 
+    const duration = 0.5;
     layout.forEach((row) => {
-        const snd = sound.EvenLinearEnvelope(new sound.Sine(row.freq), [0.1, 1.0, 0.9, 0.9, 0.2, 0.15, 0.1, 0.05, 0]);
+        const snd = sound.EvenLinearEnvelope(new sound.Sine(row.freq, duration), [0.1, 1.0, 0.9, 0.9, 0.2, 0.15, 0.1, 0.05, 0]);
         const rect = new draw.Rect(new draw.Pt(row.l, row.b), new draw.Pt(row.r, row.t));
         const ss = new draw.SubScreen(dctx, row.id, rect);
 
@@ -71,13 +72,17 @@ function main() {
 
      const snd = new sound.Join(blendedSounds);
 */
-    const snd = sound.Harmonics(220, [0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05]);
+
+    //    const snd = sound.Harmonics(220, [0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05]);
+    const v = new voice.Voice(voice.Type.AcousticGuitar);
+    const snd = v.Sound(220, 1.0);
     const rect = new draw.Rect(new draw.Pt(0.4, 0.4), new draw.Pt(0.6, 0.6));
     const ss = new draw.SubScreen(dctx, "Blend", rect);
 
     boundBox.draw(ss);
     ss.onMouse(() => { playSound(audio, snd) });
     g.plot(ss, (x) => snd.sample(x));
+
 }
 
 

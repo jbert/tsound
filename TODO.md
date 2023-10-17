@@ -1,7 +1,7 @@
 NEXT
 ----
 
-- try to replicate guitar timbe
+- try to replicate guitar timbre
     - Load harmonic spectra from CSV
     - playback
     - convert to relative harmonic power
