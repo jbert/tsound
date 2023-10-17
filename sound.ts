@@ -219,13 +219,14 @@ export class converter {
         let samples = new Int16Array(numSamples);
 
         let t = 0;
-        let dt = 1 / numSamples;
+        let dt = 1 / this.sampleRate;
         for (let i = 0; i < numSamples; i++) {
             samples[i] = this.snd.sample(t) * 32767;
             t += dt;
         }
         return samples;
     }
+
     toWAV(): wav {
         return new wav(1, this.sampleRate, 16, this.toSamplesS16LE());
     }
