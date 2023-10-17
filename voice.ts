@@ -87,15 +87,15 @@ export class Voice {
     }
 
     Sound(fundamental: number, dur: number): sound.Sound {
-        console.log("JB this is: " + this);
         const harmonics = this.tones.map((ampl: number, overtone: number): sound.Sound => {
             const freq = fundamental * (overtone + 1);
-            console.log("freq " + freq + " ampl " + ampl);
             const snd = new sound.Scale(new sound.Sine(freq, dur), ampl);
+            //            console.log("freq " + freq + " ampl " + ampl + " dur " + snd.duration() + " snd " + snd);
             return sound.EvenLinearEnvelope(snd, [0.1, 1.0, 1.0, 0.7, 0.2, 0.1, 0.05, 0.05, 0.05, 0.05]);
-
         });
-        return new sound.Join(harmonics);
+
+        const voice = new sound.Join(harmonics.filter((s) => s != undefined));
+        return voice
     }
 }
 

@@ -46,7 +46,7 @@ function main() {
     const boundBox = new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1));
     const g = new graph.Graph(0, 1.0, -1, +1);
 
-    const duration = 0.5;
+    const duration = 2.0;
     layout.forEach((row) => {
         const snd = sound.EvenLinearEnvelope(new sound.Sine(row.freq, duration), [0.1, 1.0, 0.9, 0.9, 0.2, 0.15, 0.1, 0.05, 0]);
         const rect = new draw.Rect(new draw.Pt(row.l, row.b), new draw.Pt(row.r, row.t));
@@ -75,7 +75,7 @@ function main() {
 
     //    const snd = sound.Harmonics(220, [0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05]);
     const v = new voice.Voice(voice.Type.AcousticGuitar);
-    const snd = v.Sound(220, 1.0);
+    const snd = v.Sound(110, 0.2);
     const rect = new draw.Rect(new draw.Pt(0.4, 0.4), new draw.Pt(0.6, 0.6));
     const ss = new draw.SubScreen(dctx, "Blend", rect);
 
