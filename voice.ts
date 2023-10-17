@@ -53,6 +53,8 @@ export class Voice {
         if (!this.tones) {
             throw new Error("Can't find tones for: " + type);
         }
+        this.tones = this.tones.map((n) => (n == undefined) ? 0 : n);
+
     }
 
     Sound(fundamental: number, dur: number): sound.Sound {
