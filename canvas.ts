@@ -82,7 +82,8 @@ function main() {
     const dY = 0.4;
     const dur = 0.2;
     const octave = 3;
-    const v = new voice.Voice(voice.Type.AcousticGuitar);
+    // const v = new voice.Voice(voice.Type.AcousticGuitar);
+    const v = new voice.TwangVoice();
 
     notes.forEach((row, idx) => {
         //        console.log("row.name is: " + row.name);

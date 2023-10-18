@@ -108,9 +108,8 @@ export function EvenLinearEnvelope(sound: Sound, pts: number[]): Envelope {
     return new Envelope(sound, linearEnv);
 }
 
-export function EnvelopeExp(sound: Sound): Envelope {
+export function EnvelopeExp(sound: Sound, decreaseTo = 0.1): Envelope {
     let expEnv = function (t: number) {
-        let decreaseTo = 0.1
         const k = Math.log(decreaseTo) / sound.duration()
         // console.log("k is: " + k);
         // console.log("Math.log(0.1) is: " + Math.log(decreaseTo));

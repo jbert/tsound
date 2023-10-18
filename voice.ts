@@ -1,5 +1,9 @@
 import * as sound from "./sound.js";
 
+export interface Voice {
+    Sound(fundamental: number, duration: number): sound.Sound;
+}
+
 let acousticGuitarTones: number[] = [
     0.184077200146896,
     0.0384591782045353,
@@ -54,7 +58,6 @@ export class Voice {
             throw new Error("Can't find tones for: " + type);
         }
         this.tones = this.tones.map((n) => (n == undefined) ? 0 : n);
-
     }
 
     Sound(fundamental: number, dur: number): sound.Sound {
@@ -68,4 +71,45 @@ export class Voice {
         const voice = new sound.Join(harmonics.filter((s) => s != undefined));
         return voice
     }
+}
+
+function upTo(n: number): number[] {
+    let nums = []
+    for (let i = 1; i <= n; i++) {
+        nums.push(i);
+    }
+    return nums;
+}
+
+export class TwangVoice {
+    harmonicPower: number
+    decayPower: number
+    decreaseToBase: number
+
+    constructor(harmonicPower: number = 2, decayPower: number = 2, decreaseToBase: number = 0.05) {
+        this.harmonicPower = harmonicPower;
+        this.decayPower = decayPower;
+        this.decreaseToBase = decreaseToBase;
+    }
+
+    Sound(fundamental: number, dur: number): sound.Sound {
+        const numOvertones = 20;
+        let nums = upTo(numOvertones);
+        const baseAmpl = 0.5;
+
+        const harmonics = nums.map((idx: number): sound.Sound => {
+            const freq = fundamental * idx;
+            const ampl = baseAmpl / Math.pow(idx, this.harmonicPower);
+            const snd = new sound.Scale(new sound.Sine(freq, dur), ampl);
+            //            console.log("freq " + freq + " ampl " + ampl + " dur " + snd.duration() + " snd " + snd);
+            //            return sound.EvenLinearEnvelope(snd, [0.1, 1.0, 1.0, 0.7, 0.2, 0.1, 0.05, 0.05, 0.05, 0.05]);
+
+            const decreaseTo = this.decreaseToBase / Math.pow(idx, this.decayPower);
+            return sound.EnvelopeExp(snd, decreaseTo);
+        });
+
+        const voice = new sound.Join(harmonics.filter((s) => s != undefined));
+        return voice
+    }
+
 }
