@@ -78,7 +78,7 @@ function main() {
         boundBox.draw(ss);
 
         ss.onMouse(() => {
-            playSound(audio, snd);
+            playSound(audio, snd, sampleRate);
         });
 
         g.plot(ss, (x) => snd.sample(x));
@@ -118,7 +118,7 @@ function main() {
         const ss = new draw.SubScreen(dctx, row.name, rect);
         boundBox.draw(ss);
         ss.onMouse(() => {
-            playSound(audio, snd);
+            playSound(audio, snd, sampleRate);
         });
     });
 
@@ -149,8 +149,12 @@ function main() {
     */
 }
 
-function playSound(audio: HTMLAudioElement, snd: sound.Sound) {
-    let conv = new sound.converter(snd, 8000);
+function playSound(
+    audio: HTMLAudioElement,
+    snd: sound.Sound,
+    sampleRate: number
+) {
+    let conv = new sound.converter(snd, sampleRate);
     const wav = conv.toWAV();
     const dataURL = "data:audio/wav;base64," + window.btoa(wav.asString());
     //    console.log(dataURL);
