@@ -1,2 +1,5 @@
+MODULE=esnext
+TARGET=esnext
+
 all:
-	tsc -m esnext *.ts
+	tsc -m ${MODULE} -t ${TARGET} *.ts
