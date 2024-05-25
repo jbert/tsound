@@ -5,23 +5,23 @@ import * as voice from "./voice.js";
 import * as note from "./note.js";
 
 function main() {
-    const canvas = document.getElementById('the-canvas');
+    const canvas = document.getElementById("the-canvas");
     if (!(canvas instanceof HTMLCanvasElement)) {
-        throw new Error("Element is not a canvas: " + (typeof canvas));
+        throw new Error("Element is not a canvas: " + typeof canvas);
     }
     canvas.width = 600;
     canvas.height = 600;
 
-    const audio = document.getElementById('the-audio');
+    const audio = document.getElementById("the-audio");
     if (!(audio instanceof HTMLAudioElement)) {
-        throw new Error("Element is not a audio: " + (typeof audio));
+        throw new Error("Element is not a audio: " + typeof audio);
     }
 
-    let ctx = canvas.getContext('2d');
+    let ctx = canvas.getContext("2d");
     if (ctx == null) {
         throw new Error("Can't get 2d context");
     }
-    let dctx = new draw.Context(ctx, 'white', 'black');
+    let dctx = new draw.Context(ctx, "white", "black");
 
     canvas.onclick = (ev: MouseEvent) => {
         const br = canvas.getBoundingClientRect();
@@ -31,7 +31,7 @@ function main() {
         //        console.log("X: " + x);
         //        console.log("Y: " + y);
         dctx.mouseClick(new draw.Pt(x, y));
-    }
+    };
 
     new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1)).draw(dctx);
 
@@ -40,31 +40,51 @@ function main() {
     const boundBox = new draw.Rect(new draw.Pt(0, 0), new draw.Pt(1, 1));
     const duration = 0.5;
 
-
     const g = new graph.Graph(0, 1.0, -1, +1);
 
-    const layout: { id: string, freq: number, l: number, r: number, b: number, t: number }[] = [
-        { id: "A", freq: 440, l: 0.1, r: 0.4, b: 0.6, t: 0.75 },
-        { id: "B", freq: 110, l: 0.6, r: 0.9, b: 0.6, t: 0.75 },
-        { id: "C", freq: 220, l: 0.1, r: 0.4, b: 0.75, t: 0.9 },
-        { id: "D", freq: 330, l: 0.6, r: 0.9, b: 0.75, t: 0.9 },
-    ]
+    const layout: {
+        id: string;
+        freq: number;
+        src: string;
+        l: number;
+        r: number;
+        b: number;
+        t: number;
+    }[] = [
+        { id: "A", src: "sine", freq: 440, l: 0.1, r: 0.25, b: 0.6, t: 0.75 },
+        { id: "B", src: "sine", freq: 110, l: 0.25, r: 0.45, b: 0.6, t: 0.75 },
+        { id: "C", src: "sine", freq: 220, l: 0.1, r: 0.25, b: 0.75, t: 0.9 },
+        { id: "D", src: "sine", freq: 330, l: 0.25, r: 0.45, b: 0.75, t: 0.9 },
+
+        { id: "A", src: "square", freq: 440, l: 0.6, r: 0.75, b: 0.6, t: 0.75 },
+        { id: "B", src: "square", freq: 110, l: 0.75, r: 0.9, b: 0.6, t: 0.75 },
+        { id: "C", src: "square", freq: 220, l: 0.6, r: 0.75, b: 0.75, t: 0.9 },
+        { id: "D", src: "square", freq: 330, l: 0.75, r: 0.9, b: 0.75, t: 0.9 },
+    ];
 
     layout.forEach((row) => {
-        //        const snd = sound.EvenLinearEnvelope(new sound.Sine(row.freq, duration), [0.1, 1.0, 0.9, 0.9, 0.2, 0.15, 0.1, 0.05, 0]);
-        const snd = sound.EvenLinearEnvelope(new sound.Square(row.freq, duration), [0.1, 1.0, 0.9, 0.9, 0.2, 0.15, 0.1, 0.05, 0]);
-        const rect = new draw.Rect(new draw.Pt(row.l, row.b), new draw.Pt(row.r, row.t));
+        const sndSrc = row.src == "sine" ? sound.Sine : sound.Square;
+        const snd = sound.EvenLinearEnvelope(
+            new sndSrc(row.freq, duration),
+            [0.1, 1.0, 0.9, 0.9, 0.2, 0.15, 0.1, 0.05, 0]
+        );
+        // const snd = sound.EvenLinearEnvelope(new sound.Square(row.freq, duration), [0.1, 1.0, 0.9, 0.9, 0.2, 0.15, 0.1, 0.05, 0]);
+        const rect = new draw.Rect(
+            new draw.Pt(row.l, row.b),
+            new draw.Pt(row.r, row.t)
+        );
         const ss = new draw.SubScreen(dctx, row.id, rect);
 
         boundBox.draw(ss);
 
-        ss.onMouse(() => { playSound(audio, snd) });
+        ss.onMouse(() => {
+            playSound(audio, snd);
+        });
 
         g.plot(ss, (x) => snd.sample(x));
     });
 
-
-    const notes: { name: string, pitch: note.Pitch, octave: number }[] = [
+    const notes: { name: string; pitch: note.Pitch; octave: number }[] = [
         { name: "C", pitch: note.Pitch.C, octave: 3 },
         { name: "D", pitch: note.Pitch.D, octave: 3 },
         { name: "E", pitch: note.Pitch.E, octave: 3 },
@@ -88,14 +108,19 @@ function main() {
         //        console.log("row.pitch is: " + row.pitch);
         const freq = note.noteFreq(row.pitch, row.octave);
         const snd = v.Sound(freq, dur);
-        const x = xBase + (idx * dX);
-        const rect = new draw.Rect(new draw.Pt(x, yBase), new draw.Pt(x + dX, yBase + dY));
+        const x = xBase + idx * dX;
+        const rect = new draw.Rect(
+            new draw.Pt(x, yBase),
+            new draw.Pt(x + dX, yBase + dY)
+        );
 
         //        console.log("idx: " + idx + " freq " + freq);
         const ss = new draw.SubScreen(dctx, row.name, rect);
         boundBox.draw(ss);
-        ss.onMouse(() => { playSound(audio, snd) });
-    })
+        ss.onMouse(() => {
+            playSound(audio, snd);
+        });
+    });
 
     /*
     let soundSpec: { sound: sound.Sound, loudness: number }[] = [
@@ -122,19 +147,15 @@ function main() {
     ss.onMouse(() => { playSound(audio, snd) });
     g.plot(ss, (x) => snd.sample(x));
     */
-
 }
-
 
 function playSound(audio: HTMLAudioElement, snd: sound.Sound) {
     let conv = new sound.converter(snd, 8000);
     const wav = conv.toWAV();
-    const dataURL = 'data:audio/wav;base64,' + window.btoa(wav.asString());
+    const dataURL = "data:audio/wav;base64," + window.btoa(wav.asString());
     //    console.log(dataURL);
     audio.src = dataURL;
     audio.play();
 }
 
-
 main();
-
