@@ -1,6 +1,56 @@
 NEXT
 ----
 
+- monadic sound?
+    - Provide composabilit
+
+- draw white and black notes?
+    - keyboard shortcuts
+    - numbers?
+    - letter names?
+    - 
+
+- how to combine chords here?
+    - pitch -> multiple pitches?
+    - voice -> voice?
+
+- api cleanup:
+    - should 'voice' take a note or a freq?
+    - should we have an easier way to get freq for a note?
+    - sort out note/pitch
+
+- abbreviate notes...
+    - rename to pitch?
+        - pitch.C()
+        - pitch.C(4)
+        - allows "note" to take a key:
+            - k = key.Minor(C) // default octave? no octave?
+            - maybe just have default arg for 'key' in 'note.C()'?
+            - can we have kwargs in typescript?
+    - note.C(4);
+    - note.C()  // Default octave
+    - can we have # in identifiers?
+        - note.C#
+        - note.CS
+        - note.CF
+        - note.C♭
+
+    - chord.Major(note.C)
+    - chord.Major3(note.C)
+    - chord.Minor(note.C)
+
+- chords:
+    - new chord.Major(note.note(note.C,4))
+
+
+- define 'note.Note'
+    - have 
+
+- define scale, key and mode
+    - every key is a scale
+    - a scale with N notes has N modes
+    - lydian, mixo etc are modes of the major key (which is a scale)
+
 - try to replicate guitar timbre
     - Load harmonic spectra from CSV
     - playback
