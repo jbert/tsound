@@ -84,34 +84,50 @@ function main() {
         g.plot(ss, (x) => snd.sample(x));
     });
 
-    const notes: { name: string; pitch: note.Pitch; octave: number }[] = [
-        { name: "C", pitch: note.Pitch.C, octave: 3 },
-        { name: "D", pitch: note.Pitch.D, octave: 3 },
-        { name: "E", pitch: note.Pitch.E, octave: 3 },
-        { name: "F", pitch: note.Pitch.F, octave: 3 },
-        { name: "G", pitch: note.Pitch.G, octave: 3 },
-        { name: "A", pitch: note.Pitch.A, octave: 4 },
-        { name: "B", pitch: note.Pitch.B, octave: 4 },
-        { name: "C", pitch: note.Pitch.C, octave: 4 },
+    const notes: {
+        idx: number;
+        name: string;
+        pitch: note.Pitch;
+        octave: number;
+        blackKey: boolean;
+    }[] = [
+        { idx: 0, name: "C", pitch: note.Pitch.C, octave: 3, blackKey: false },
+        { idx: 0, name: "C#", pitch: note.Pitch.CS, octave: 3, blackKey: true },
+        { idx: 1, name: "D", pitch: note.Pitch.D, octave: 3, blackKey: false },
+        { idx: 1, name: "D#", pitch: note.Pitch.DS, octave: 3, blackKey: true },
+        { idx: 2, name: "E", pitch: note.Pitch.E, octave: 3, blackKey: false },
+        { idx: 3, name: "F", pitch: note.Pitch.F, octave: 3, blackKey: false },
+        { idx: 3, name: "F#", pitch: note.Pitch.FS, octave: 3, blackKey: true },
+        { idx: 4, name: "G", pitch: note.Pitch.G, octave: 3, blackKey: false },
+        { idx: 4, name: "G#", pitch: note.Pitch.GS, octave: 3, blackKey: true },
+        { idx: 5, name: "A", pitch: note.Pitch.A, octave: 4, blackKey: false },
+        { idx: 5, name: "A#", pitch: note.Pitch.AS, octave: 4, blackKey: true },
+        { idx: 6, name: "B", pitch: note.Pitch.B, octave: 4, blackKey: false },
+        { idx: 7, name: "C", pitch: note.Pitch.C, octave: 4, blackKey: false },
     ];
 
     const xBase = 0.1;
     const yBase = 0.1;
     const dX = 0.1;
-    const dY = 0.4;
+    const dY = 0.2;
     const dur = 0.2;
     const v = new voice.Voice(voice.Type.AcousticGuitar);
     //const v = new voice.TwangVoice();
 
-    notes.forEach((row, idx) => {
+    notes.forEach((row) => {
         //        console.log("row.name is: " + row.name);
         //        console.log("row.pitch is: " + row.pitch);
         const freq = note.noteFreq(row.pitch, row.octave);
         const snd = v.Sound(freq, dur);
-        const x = xBase + idx * dX;
+        let x = xBase + row.idx * dX;
+        let y = yBase;
+        if (row.blackKey) {
+            x += dX / 2;
+            y += dY;
+        }
         const rect = new draw.Rect(
-            new draw.Pt(x, yBase),
-            new draw.Pt(x + dX, yBase + dY)
+            new draw.Pt(x, y),
+            new draw.Pt(x + dX, y + dY)
         );
 
         //        console.log("idx: " + idx + " freq " + freq);

@@ -4,7 +4,7 @@ NEXT
 - monadic sound?
     - Provide composabilit
 
-- draw white and black notes?
+- DONE draw white and black notes?
     - keyboard shortcuts
     - numbers?
     - letter names?
