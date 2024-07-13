@@ -1,7 +1,40 @@
 NEXT
 ----
 
-- monadic sound?
+- new page, using web audio
+    - play a pure tone
+    - create an interface which is a sound src, sink or connector
+        - sine 440
+        - play in browser
+        - gain
+    - expose parameters in UI
+        - update on change
+        - htmx!?
+
+- streaming audio
+    - audiocontext + audionode
+
+- build a UI element for each 'Sound'
+    - "level" for everything
+    - duration, frequency
+    - envelope
+    - harmonic powers
+    - everything
+
+- build a Sound chooser
+
+- build an additive timeline ("channel")
+
+- support multiple, synchronised channels
+    - use case of gating a sound on the levels in another channel
+
+- add tempo, bpm and time signature
+    - add a concept of 'bar + beats'
+    - swing/offset
+
+-------
+
+- NO monadic sound?
     - Provide composabilit
 
 - DONE draw white and black notes?
@@ -9,6 +42,11 @@ NEXT
     - numbers?
     - letter names?
     - 
+
+- add HTML UI for choosing voice
+    - and altering parameters
+    - single graph (choose sine or square, choose freq and/or note+octave)
+    - try using react!?
 
 - how to combine chords here?
     - pitch -> multiple pitches?

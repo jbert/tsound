@@ -1,10 +1,7 @@
-MODULE=esnext
-TARGET=esnext
-
 all: build
 
 build:
-	tsc -m ${MODULE} -t ${TARGET} *.ts
+	tsc
 
 serve:
 	live-server

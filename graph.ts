@@ -1,4 +1,3 @@
-
 import * as draw from "./draw.js";
 
 export class Graph {
@@ -8,7 +7,13 @@ export class Graph {
     yhi: number;
     steps: number;
 
-    constructor(xlo: number, xhi: number, ylo: number, yhi: number, steps: number = 100) {
+    constructor(
+        xlo: number,
+        xhi: number,
+        ylo: number,
+        yhi: number,
+        steps: number = 100
+    ) {
         this.xlo = xlo;
         this.xhi = xhi;
         this.ylo = ylo;
@@ -17,13 +22,13 @@ export class Graph {
     }
 
     plot(ds: draw.DrawScreen, f) {
-        let last: draw.Pt;
+        let last: draw.Pt | undefined;
         let current: draw.Pt;
         //        console.log("steps " + this.steps);
-        let dx = (this.xhi - this.xlo);
-        let dy = (this.yhi - this.ylo);
+        let dx = this.xhi - this.xlo;
+        let dy = this.yhi - this.ylo;
         for (let drawX = 0; drawX <= 1; drawX += 1 / this.steps) {
-            let x = this.xlo + (dx * drawX);
+            let x = this.xlo + dx * drawX;
             let y = f(x);
             let drawY = (y - this.ylo) / dy;
 

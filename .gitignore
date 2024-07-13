@@ -1,3 +1,5 @@
 *.js
 *.wav
 *.png
+node_modules
+dist

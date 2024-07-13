@@ -9,7 +9,11 @@ function sum(ns: number[]): number {
     }, 0);
 }
 
-export function Harmonics(baseFreq: number, argWeights: number[], duration: number = 1.0): Sound {
+export function Harmonics(
+    baseFreq: number,
+    argWeights: number[],
+    duration: number = 1.0
+): Sound {
     const total = sum(argWeights);
     let sounds: Sound[] = [];
 
@@ -24,7 +28,6 @@ export function Harmonics(baseFreq: number, argWeights: number[], duration: numb
     });
     return new Join(sounds);
 }
-
 
 export class Scale {
     sound: Sound;
@@ -41,7 +44,6 @@ export class Scale {
         return this.factor * this.sound.sample(t);
     }
 }
-
 
 export class Square {
     dur: number;
@@ -82,15 +84,15 @@ export class Sine {
 }
 
 export class Join {
-    sounds: Sound[]
-    dur: number
+    sounds: Sound[];
+    dur: number;
 
     constructor(sounds: Sound[]) {
         this.sounds = sounds;
         this.dur = Math.min(...sounds.map((snd) => snd.duration()));
     }
     duration(): number {
-        return this.dur
+        return this.dur;
     }
     sample(t: number): number {
         return sum(this.sounds.map((s) => s.sample(t)));
@@ -106,7 +108,7 @@ export class Envelope {
         this.env = env;
     }
     duration(): number {
-        return this.sound.duration()
+        return this.sound.duration();
     }
     sample(t: number): number {
         return this.env(t) * this.sound.sample(t);
@@ -119,23 +121,23 @@ export function EvenLinearEnvelope(sound: Sound, pts: number[]): Envelope {
     let linearEnv = function (t: number) {
         const index = Math.floor(t / tStep);
         // Linear between pts[index] and pts[index+1]
-        const dt = (t / tStep) - index;
+        const dt = t / tStep - index;
         const a = pts[index];
-        const b = pts[index + 1]
+        const b = pts[index + 1];
         // console.log("t " + t + " tstep " + tStep + " dt " + dt);
         return a + dt * (b - a);
-    }
+    };
     return new Envelope(sound, linearEnv);
 }
 
 export function EnvelopeExp(sound: Sound, decreaseTo = 0.1): Envelope {
     let expEnv = function (t: number) {
-        const k = Math.log(decreaseTo) / sound.duration()
+        const k = Math.log(decreaseTo) / sound.duration();
         // console.log("k is: " + k);
         // console.log("Math.log(0.1) is: " + Math.log(decreaseTo));
         // Decay from 1 to 0.1 over tenthAt seconds
         return Math.exp(t * k);
-    }
+    };
     return new Envelope(sound, expEnv);
 }
 
@@ -155,11 +157,8 @@ export function to16BitLE(n: number): string {
     return s;
 }
 
-
-
 export class wav {
     numChannels: number;
-    format: number;
     bitsPerSample: number;
     sampleRate: number;
 
@@ -172,8 +171,9 @@ export class wav {
         const dataHeaderSize = 4 + 4;
 
         // 4-byte fileSize excludes itself and 4 bytes RIFF prefix
-        const dataSize = this.bitsPerSample * this.samples.length / 8;
-        const fileSize = headerSize + wavSectionSize + dataHeaderSize + dataSize;
+        const dataSize = (this.bitsPerSample * this.samples.length) / 8;
+        const fileSize =
+            headerSize + wavSectionSize + dataHeaderSize + dataSize;
 
         // RIFF header
         let str = "RIFF";
@@ -187,7 +187,7 @@ export class wav {
         str += to16BitLE(PCM_FORMAT);
         str += to16BitLE(this.numChannels);
         str += to32BitLE(this.sampleRate);
-        const bytesPerSec = this.bitsPerSample * this.sampleRate / 8;
+        const bytesPerSec = (this.bitsPerSample * this.sampleRate) / 8;
         str += to32BitLE(bytesPerSec);
         const blockAlignment = 0x02;
         str += to16BitLE(blockAlignment);
@@ -199,13 +199,17 @@ export class wav {
 
         this.samples.forEach((sample) => {
             str += to16BitLE(sample);
-        })
+        });
 
         return str;
     }
 
-
-    constructor(numChannels: number, sampleRate: number, bitsPerSample: number, samples: Int16Array) {
+    constructor(
+        numChannels: number,
+        sampleRate: number,
+        bitsPerSample: number,
+        samples: Int16Array
+    ) {
         if (numChannels != 1) {
             throw new Error("Only one channel supported");
         }
