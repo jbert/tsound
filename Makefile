@@ -1,7 +1,7 @@
 all: build
 
 build:
-	tsc
+	tsc && pnpm exec rollup -c
 
 serve:
 	live-server
