@@ -1,3 +1,4 @@
+import * as RE from "fp-ts/Record";
 import * as E from "fp-ts/Either";
 import { pipe } from "fp-ts/function";
 
@@ -35,40 +36,33 @@ const wireButton = (
         })
     );
 
-const stopClicked = () => {
-    console.log("stop clicked");
+interface state {
+    count: number;
+}
+
+const stopClicked = (s: state): state => {
+    console.log(`stop clicked: ${JSON.stringify(s)}`);
+    return { ...s, count: s.count + 1 };
 };
 
-const playClicked = () => {
-    console.log("play clicked");
+const playClicked = (s: state): state => {
+    console.log(`play clicked: ${JSON.stringify(s)}`);
+    return { ...s, count: s.count + 1 };
 };
 
 const initialise = (): E.Either<string, string> => {
+    let s: state = { count: 0 };
     const buttons = pipe(
-        "play-button",
-        getElement(isElt(HTMLButtonElement), "Not button element"),
-        E.map((playButton) => {
-            playButton.onclick = playClicked;
-            return { playButton };
-        }),
-        E.map((x) => {
-            return {
-                ...x,
-                stopButton: pipe(
-                    "stop-button",
-                    getElement(isElt(HTMLButtonElement), "Not button element"),
-                    E.map((stopButton) => {
-                        stopButton.onclick = stopClicked;
-                        return { stopButton };
-                    })
-                ),
-            };
-        })
+        {
+            play: wireButton("play-button", () => (s = playClicked(s))),
+            stop: wireButton("stop-button", () => (s = stopClicked(s))),
+        },
+        RE.sequence(E.Applicative)
     );
 
-    console.log(`${buttons}`);
+    console.log(`Buttons: ${JSON.stringify(buttons)}`);
 
-    const audioCtx = new AudioContext();
+    // const audioCtx = new AudioContext();
     //    const source = new OscillatorNode(audioCtx);
     //    source.connect(audioCtx.destination);
 
