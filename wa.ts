@@ -1,10 +1,16 @@
 import * as E from "fp-ts/Either";
-//import { pipe } from "fp-ts/function";
+import { pipe } from "fp-ts/function";
 
-/*
-const isButton = (elt: HTMLElement): elt is HTMLButtonElement => {
-    return elt instanceof HTMLButtonElement;
+type Ctor<T> = new (...args: any[]) => T;
+
+const isElt = <T extends HTMLElement>(
+    filterType: Ctor<T>
+): ((elt: HTMLElement) => elt is T) => {
+    return (elt): elt is T => elt instanceof filterType;
 };
+
+const isButton = isElt(HTMLButtonElement);
+const isAudio = isElt(HTMLAudioElement);
 
 const getElement = (id: string): E.Either<string, HTMLElement> =>
     pipe(
@@ -13,11 +19,22 @@ const getElement = (id: string): E.Either<string, HTMLElement> =>
     );
 
 const playClicked = () => console.log("play clicked");
-*/
 
-const initialise = (): E.Either<string, string> => {
-    return E.right("all good");
-    //    const playButton = pipe("play-button", getElement, E.filterOrElse(isButton, () => "Not a button"), E.fold((e) => console.log("Can't get play button"), (b) => b.onclick=playClicked);
+const initialise = (): E.Either<string, any> => {
+    const pb = pipe(
+        "play-button",
+        getElement,
+        E.filterOrElse(isButton, () => "Not a button"),
+        E.map((b) => (b.onclick = playClicked))
+    );
+
+    const ae = pipe(
+        "the-audio",
+        getElement,
+        E.filterOrElse(isAudio, () => "Not audio element")
+    );
+
+    return E.right("Got button and audio");
     //    const audio = pipe("the-audio", getElement, E.map(isAudio));
 
     //    const audioCtx = new AudioContext();
