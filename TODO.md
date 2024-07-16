@@ -9,7 +9,36 @@ NEXT
         - gain
     - expose parameters in UI
         - update on change
-        - htmx!?
+        - htmx!? (no?)
+
+- remove audio element
+    - init code:
+        - finds buttons
+        - sets up nodes
+        - attaches handlers
+    - hook 'start' and 'stop' code into button on-click
+        https://nextjournal.com/avidrucker/web-audio-api-first-practice
+        - maybe we can't do setup outside of button click?
+
+- then add some buttons (or editable controls with onchange) to modify the audio chain
+    - change parameters (e.g. gain)
+    - and some 'add node' buttons (add additional sine gen at freq X)
+    - show current nodes in a UI
+    - add 'X' to remove them
+    - have the "show node" also provide editable params
+        - with onchange
+
+- add 'grouping' to node list
+    - select a bunch
+    - 'create group' takes a name
+
+- how to represent topology in UI?
+    - select A and B and 'connect' / 'disconnect'?
+
+- custom nodes
+    - howto: https://github.com/g200kg/webaudio-customnode
+    - also "worklet"
+    - also look for libraries of existing
 
 - streaming audio
     - audiocontext + audionode

@@ -10,9 +10,6 @@ const isElt =
     (elt): elt is T =>
         elt instanceof filterType;
 
-const isButton = isElt(HTMLButtonElement);
-const isAudio = isElt(HTMLAudioElement);
-
 const getElement =
     <T extends HTMLElement>(
         filter: (e: HTMLElement) => e is T,
@@ -22,32 +19,63 @@ const getElement =
         pipe(
             document.getElementById(id),
             E.fromNullable(`No element with id ${id}`),
-            E.filterOrElse(filter, () => wrongTypeErr)
+            E.filterOrElse(filter, () => `${wrongTypeErr}: ${id}`)
         );
 
-const playClicked = () => console.log("play clicked");
+const wireButton = (
+    id: string,
+    handler: () => void
+): E.Either<string, HTMLButtonElement> =>
+    pipe(
+        id,
+        getElement(isElt(HTMLButtonElement), "Not button element"),
+        E.map((button) => {
+            button.onclick = handler;
+            return button;
+        })
+    );
 
-const initialise = (): E.Either<string, any> => {
-    const pb = pipe(
+const stopClicked = () => {
+    console.log("stop clicked");
+};
+
+const playClicked = () => {
+    console.log("play clicked");
+};
+
+const initialise = (): E.Either<string, string> => {
+    const buttons = pipe(
         "play-button",
-        getElement(isButton, "Not a button"),
-        //        E.filterOrElse(isButton, () => "Not a button"),
-        E.map((b) => (b.onclick = playClicked))
+        getElement(isElt(HTMLButtonElement), "Not button element"),
+        E.map((playButton) => {
+            playButton.onclick = playClicked;
+            return { playButton };
+        }),
+        E.map((x) => {
+            return {
+                ...x,
+                stopButton: pipe(
+                    "stop-button",
+                    getElement(isElt(HTMLButtonElement), "Not button element"),
+                    E.map((stopButton) => {
+                        stopButton.onclick = stopClicked;
+                        return { stopButton };
+                    })
+                ),
+            };
+        })
     );
 
-    const ae = pipe(
-        "the-audio",
-        getElement(isAudio, "Not audio element")
-        //        E.filterOrElse(isAudio, () => "Not audio element")
-    );
-    console.log(`${pb} ${ae}`);
+    console.log(`${buttons}`);
+
+    const audioCtx = new AudioContext();
+    //    const source = new OscillatorNode(audioCtx);
+    //    source.connect(audioCtx.destination);
+
+    //    source.start();
 
     return E.right("Got button and audio");
-    //    const audio = pipe("the-audio", getElement, E.map(isAudio));
 
-    //    const audioCtx = new AudioContext();
-
-    //    const oscillator = new OscillatorNode(audioCtx);
     //    const gainNode = new GainNode(audioCtx);
 
     //    oscillator.connect(gainNode).connect(audioCtx.destination);
