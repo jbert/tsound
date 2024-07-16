@@ -2,8 +2,8 @@ NEXT
 ----
 
 - new page, using web audio
-    - play a pure tone
-    - create an interface which is a sound src, sink or connector
+    - DONE play a pure tone
+    - DONE create an interface which is a sound src, sink or connector
         - sine 440
         - play in browser
         - gain
@@ -11,14 +11,14 @@ NEXT
         - update on change
         - htmx!? (no?)
 
-- remove audio element
-    - init code:
-        - finds buttons
-        - sets up nodes
-        - attaches handlers
-    - hook 'start' and 'stop' code into button on-click
+- DONE remove audio element
+    - DONE init code:
+        - DONE finds buttons
+        - DONE sets up nodes
+        - DONE attaches handlers
+    - DONE hook 'start' and 'stop' code into button on-click
         https://nextjournal.com/avidrucker/web-audio-api-first-practice
-        - maybe we can't do setup outside of button click?
+        - DONE maybe we can't do setup outside of button click?
 
 - then add some buttons (or editable controls with onchange) to modify the audio chain
     - change parameters (e.g. gain)

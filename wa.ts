@@ -38,15 +38,38 @@ const wireButton = (
 
 interface state {
     count: number;
+    ctx?: AudioContext;
+    source?: AudioNode;
 }
 
-const stopClicked = (s: state): state => {
-    console.log(`stop clicked: ${JSON.stringify(s)}`);
-    return { ...s, count: s.count + 1 };
+const initialiseState = (s: state): state => {
+    const audioCtx = new AudioContext();
+    const source = new OscillatorNode(audioCtx);
+    source.connect(audioCtx.destination);
+    source.start();
+    console.log("You gotta make sure you're connected");
+
+    return { ...s, ctx: audioCtx, source: source };
+};
+
+const stateInitialised = (s: state): boolean => {
+    return s.ctx !== undefined;
 };
 
 const playClicked = (s: state): state => {
     console.log(`play clicked: ${JSON.stringify(s)}`);
+    console.log("running");
+    if (!stateInitialised(s)) {
+        console.log("initialising");
+        s = initialiseState(s);
+    }
+    return { ...s, count: s.count + 1 };
+};
+
+const stopClicked = (s: state): state => {
+    console.log(`stop clicked: ${JSON.stringify(s)}`);
+    s.ctx?.close();
+    s.ctx = undefined;
     return { ...s, count: s.count + 1 };
 };
 
@@ -61,12 +84,6 @@ const initialise = (): E.Either<string, string> => {
     );
 
     console.log(`Buttons: ${JSON.stringify(buttons)}`);
-
-    // const audioCtx = new AudioContext();
-    //    const source = new OscillatorNode(audioCtx);
-    //    source.connect(audioCtx.destination);
-
-    //    source.start();
 
     return E.right("Got button and audio");
 
