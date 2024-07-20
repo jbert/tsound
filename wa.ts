@@ -36,20 +36,44 @@ const wireButton = (
         })
     );
 
+interface sourceNode extends AudioNode {
+    start(): void;
+    stop(): void;
+}
+
 interface state {
     count: number;
     ctx?: AudioContext;
-    source?: AudioNode;
+    sources?: Array<sourceNode>;
 }
 
 const initialiseState = (s: state): state => {
     const audioCtx = new AudioContext();
-    const source = new OscillatorNode(audioCtx);
-    source.connect(audioCtx.destination);
-    source.start();
-    console.log("You gotta make sure you're connected");
 
-    return { ...s, ctx: audioCtx, source: source };
+    const freq = 440;
+    const fifth = (freq / 2) * 3;
+    const minor3 = (freq / 4) * 5;
+    const major3 = (freq / 5) * 6;
+
+    const s1 = new OscillatorNode(audioCtx);
+    s1.frequency.value = freq;
+    const s2 = new OscillatorNode(audioCtx);
+    s2.frequency.value = major3;
+    const s3 = new OscillatorNode(audioCtx);
+    s3.frequency.value = fifth;
+
+    const sources: Array<sourceNode> = [s1, s2, s3];
+
+    const mixer = new GainNode(audioCtx);
+    mixer.gain.value = 1 / sources.length;
+
+    sources.map((s) => {
+        s.connect(mixer);
+        s.start();
+    });
+    mixer.connect(audioCtx.destination);
+
+    return { ...s, ctx: audioCtx, sources: sources };
 };
 
 const stateInitialised = (s: state): boolean => {
@@ -63,11 +87,13 @@ const playClicked = (s: state): state => {
         console.log("initialising");
         s = initialiseState(s);
     }
+
     return { ...s, count: s.count + 1 };
 };
 
 const stopClicked = (s: state): state => {
     console.log(`stop clicked: ${JSON.stringify(s)}`);
+    s.sources?.map((s) => s.stop());
     s.ctx?.close();
     s.ctx = undefined;
     return { ...s, count: s.count + 1 };

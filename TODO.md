@@ -20,6 +20,13 @@ NEXT
         https://nextjournal.com/avidrucker/web-audio-api-first-practice
         - DONE maybe we can't do setup outside of button click?
 
+- hook up multiple inputs
+    - feed to a gain node to mix
+    - add final gain node before destination to bring to [-1,+1] range
+
+- display audio chain
+    - start with simple chain
+
 - then add some buttons (or editable controls with onchange) to modify the audio chain
     - change parameters (e.g. gain)
     - and some 'add node' buttons (add additional sine gen at freq X)
