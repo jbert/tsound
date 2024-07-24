@@ -1,5 +1,5 @@
-import * as RE from "fp-ts/Record";
 import * as E from "fp-ts/Either";
+import * as A from "fp-ts/Array";
 import { pipe } from "fp-ts/function";
 
 type Ctor<T> = new (...args: any[]) => T;
@@ -23,6 +23,30 @@ const getElement =
             E.filterOrElse(filter, () => `${wrongTypeErr}: ${id}`)
         );
 
+const wireInput = (
+    id: string,
+    handler: (v) => void
+): E.Either<string, HTMLInputElement> => {
+    let e = pipe(
+        id,
+        getElement(isElt(HTMLInputElement), "Not input element"),
+        E.map((input) => {
+            input.onchange = () => {
+                handler(input.value);
+            };
+            input.oninput = () => {
+                handler(input.value);
+            };
+            input.onclick = () => {
+                handler(input.value);
+            };
+            return input;
+        })
+    );
+    console.log(`wireInput: ${id} ${JSON.stringify(e)}`);
+    return e;
+};
+
 const wireButton = (
     id: string,
     handler: () => void
@@ -43,6 +67,7 @@ interface sourceNode extends AudioNode {
 
 interface state {
     count: number;
+    input: input;
     ctx?: AudioContext;
     sources?: Array<sourceNode>;
 }
@@ -50,7 +75,7 @@ interface state {
 const initialiseState = (s: state): state => {
     const audioCtx = new AudioContext();
 
-    const freq = 440;
+    const freq = s.input.freq;
     const fifth = (freq / 2) * 3;
     const minor3 = (freq / 4) * 5;
     const major3 = (freq / 5) * 6;
@@ -58,7 +83,7 @@ const initialiseState = (s: state): state => {
     const s1 = new OscillatorNode(audioCtx);
     s1.frequency.value = freq;
     const s2 = new OscillatorNode(audioCtx);
-    s2.frequency.value = major3;
+    s2.frequency.value = minor3;
     const s3 = new OscillatorNode(audioCtx);
     s3.frequency.value = fifth;
 
@@ -75,6 +100,10 @@ const initialiseState = (s: state): state => {
 
     return { ...s, ctx: audioCtx, sources: sources };
 };
+
+interface input {
+    freq: number;
+}
 
 const stateInitialised = (s: state): boolean => {
     return s.ctx !== undefined;
@@ -100,29 +129,75 @@ const stopClicked = (s: state): state => {
 };
 
 const initialise = (): E.Either<string, string> => {
-    let s: state = { count: 0 };
-    const buttons = pipe(
-        {
-            play: wireButton("play-button", () => (s = playClicked(s))),
-            stop: wireButton("stop-button", () => (s = stopClicked(s))),
-        },
-        RE.sequence(E.Applicative)
+    // Should match HTML. How to sync?
+    const defaultFreq = 440;
+    let s: state = {
+        count: 0,
+        input: { freq: defaultFreq },
+    };
+
+    const inputs: Array<[string, (v: string) => void]> = [
+        [
+            "freq-input",
+            (v: string) => {
+                console.log(`input handler running: ${JSON.stringify(s)}`);
+                s = { ...s, input: { ...s.input, freq: +v } };
+                console.log(`input handler ret: ${JSON.stringify(s)}`);
+            },
+        ],
+    ];
+    const buttons: Array<[string, () => void]> = [
+        [
+            "play-button",
+            () => {
+                s = playClicked(s);
+            },
+        ],
+        [
+            "stop-button",
+            () => {
+                s = stopClicked(s);
+            },
+        ],
+    ];
+    return pipe(
+        inputs,
+        A.traverse(E.Applicative)(([id, handler]) => wireInput(id, handler)),
+        E.flatMap((v) =>
+            pipe(
+                buttons,
+                A.traverse(E.Applicative)(([id, handler]) =>
+                    wireButton(id, handler)
+                )
+            )
+        ),
+        E.map((e) => "Init OK")
     );
-
-    console.log(`Buttons: ${JSON.stringify(buttons)}`);
-
-    return E.right("Got button and audio");
-
-    //    const gainNode = new GainNode(audioCtx);
-
-    //    oscillator.connect(gainNode).connect(audioCtx.destination);
-
     /*
-    oscillator.context;
-    oscillator.numberOfInputs;
-    oscillator.numberOfOutputs;
-    oscillator.channelCount;
-    */
+    return pipe(
+        inputs,
+        A.traverse(E.Applicative)((e: HTMLElement) => `{e} initialised OK`),
+    );
+        getElement(isElt(HTMLInputElement), "Not an input element"),
+        "input-freq",
+        E.map((inputFreq) => {
+            inputFreq.onload
+            return { ...s, input: { ...s.input, freq: +inputFreq.value } };
+        }),
+        E.flatMap((s: state) =>
+            pipe(
+                wireButton("play-button", () => playClicked(s)),
+                E.map(() => s)
+            )
+        ),
+        E.flatMap((s: state) =>
+            pipe(
+                wireButton("stop-button", () => stopClicked(s)),
+                E.map(() => s)
+            )
+        ),
+        E.map(() => "Initialised")
+        */
 };
 
 function main() {
